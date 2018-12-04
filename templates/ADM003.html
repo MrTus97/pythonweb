@@ -48,7 +48,7 @@
 					<tr>
 						<td class="lbl_left"><font color = "red">*</font> アカウント名:</td>
 						<td align="left">
-							<input class="txBox" id="idUser" type="text" name="id" value="{{ user.id}}" maxlength="15" required
+							<input class="txBox" id="idUser" type="text" name="login_name" value="" maxlength="15" required
 							size="15" onfocus="this.style.borderColor='#0066ff';"
 							oninput="return xxx(this);"
 							oninvalid="return xxx(this);"
@@ -63,14 +63,14 @@
 								<option value="{{ group.group_id }}"> {{ group.group_name}} </option>
 								{% endfor %}
 							</select>			
-							<input type="hidden" name ="groupname" id="groupname" value="{{ user.groupname}}"/>				
+							<input type="hidden" name ="group_name" id="groupname" value=""/>				
 							<span>&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 					<tr>
 						<td class="lbl_left"><font color = "red">*</font> 氏名:</td>
 						<td align="left">
-						<input class="txBox" type="text" name="name" value="{{user.name}}" required
+						<input class="txBox" type="text" name="name" value="" required
 							size="30" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />							
 						</td>
@@ -78,7 +78,7 @@
 					<tr>
 						<td class="lbl_left">カタカナ氏名:</td>
 						<td align="left">
-						<input class="txBox" type="text" name="namekata" value="{{user.namekata}}"
+						<input class="txBox" type="text" name="full_name_kana" value=""
 							size="30" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />							
 						</td>
@@ -125,35 +125,35 @@
 					</tr>
 					<tr>
 						<th align="left" colspan = "2" >							
-								<a href = "#" id="title_egibility">日本語能力</a>
+								<a href="javascript:void(0)" id="japan_level">日本語能力</a>
 						</th>			
 					</tr>
 					<tr>
-						<td class="lbl_left title_egibility" id="egibility" class="">資格:</td>
-						<td align="left" class="title_egibility">
-							<select name="kyu_id" id="kyu_id" name="code_level"></select>
-							<input type="hidden" name ="kyu_name" id="kyu_name"/>							
+						<td class="lbl_left japan_level" id="egibility" class="">資格:</td>
+						<td align="left" class="japan_level">
+							<select id="code_level" name="code_level"></select>
+							<input type="hidden" name ="name_level" id="name_level"/>							
 						</td>
 					</tr>
 					<tr>
-						<td class="lbl_left title_egibility" id="startdate" >資格交付日: </td>
-						<td align="left" class="title_egibility">
-							<select id="qualification_year" name="qualification_year"></select>年
-							<select id="qualification_month" name="qualification_month"></select>月
-							<select id="qualification_date" name="qualification_day"></select>日							
+						<td class="lbl_left japan_level" id="startdate" >資格交付日: </td>
+						<td align="left" class="japan_level">
+							<select id="start_date_year" name="start_date_year"></select>年
+							<select id="start_date_month" name="start_date_month"></select>月
+							<select id="start_date_date" name="start_date_date"></select>日							
 						</td>
 					</tr>
 					<tr>
-						<td class="lbl_left title_egibility" id="enddate">失効日: </td>
-						<td align="left" class="title_egibility">
-							<select id="expire_year" name="expire_year"></select>年
-							<select id="expire_month" name="expire_month"></select>月
-							<select id="expire_date" name="expire_day"></select>日							
+						<td class="lbl_left japan_level" id="enddate">失効日: </td>
+						<td align="left" class="japan_level">
+							<select id="end_date_year" name="end_date_year"></select>年
+							<select id="end_date_month" name="end_date_month"></select>月
+							<select id="end_date_date" name="end_date_date"></select>日							
 						</td>
 					</tr>
 					<tr>
-						<td class="lbl_left title_egibility">点数: </td>
-						<td align="left" class="title_egibility">
+						<td class="lbl_left japan_level">点数: </td>
+						<td align="left" class="japan_level">
 							<input class="txBox" type="number" name="total" value="{{user.total}}" id="total"
 							size="5" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />							
@@ -174,7 +174,7 @@
 					<input class="btn" type="submit" value="確認" />			
 				</td>	
 				<td>
-					<input class="btn" type="button" value="戻る" onclick="returnHome()" />						
+					<input class="btn" type="button" value="戻る" onclick="window.location = '/'" />						
 				</td>
 		</tr>		
 	</table>

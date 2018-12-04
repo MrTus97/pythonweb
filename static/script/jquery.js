@@ -9,9 +9,6 @@
 var editUser = function(userId){
     window.location.href = '/edit-user/'+userId;
 }
-var returnHome = function(){
-    window.location = '/';
-}
 var create_user = function(){
     window.location = '/create-user'
 }

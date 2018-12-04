@@ -58,46 +58,51 @@ $(document).ready(function() {
             input.setCustomValidity('"' + input.value + '" is not a feeling.');
         }   
     }
-    $('.title_egibility').hide()
-    $('#title_egibility').click(function(){
-        $('.title_egibility').show();
+
+    //Click vào trường tiếng nhật
+    $('.japan_level').hide();
+    
+
+    // $('#kyu_id').change(function(){
+    //     if ($('#kyu_id').val() != "0"){
+    //         $('#total').prop('required',true);
+    //         $('#kyu_name').val($( "#kyu_id option:selected" ).text());
+    //     }else{
+    //         $('#total').prop('required',false);
+    //     }
+    // });
+
+    function iaaSsValidateForm(){
+        password = $('#password').val();
+        repassword = $('#repassword').val();
+        if (password != repassword){
+            alert('Re-password does not correct');
+            return false;
+        }
+        return true;
+    }
+    
+    $('#japan_level').click(function(){
         $.get("/japan", function(data, status){
             if (status == 'success'){
                 var obj = JSON.parse(data);
-                $('#kyu_id').find('option').remove().end();
-                $('#kyu_id').append('<option value="0"> 選択してください </option>');
+                $('#code_level').find('option').remove().end();
+                $('#code_level').append('<option value="0"> 選択してください </option>');
                 for (egibility = 0; egibility < obj.length; egibility++){
-                    $('#kyu_id').append('<option value="'+obj[egibility].code_level+'">'+ obj[egibility].name_level +'</option>');
+                    $('#code_level').append('<option value="'+obj[egibility].code_level+'">'+ obj[egibility].name_level +'</option>');
                 }
-
+    
                 //Sinh ngày tháng năm hết hạn của tiếng nhật
-                generationYear('#expire_year',1900,(new Date()).getFullYear());
-                generationMonth('#expire_month');
-                generationDate('#expire_date',31);
-
-                generationYear('#qualification_year',1900,(new Date()).getFullYear());
-                generationMonth('#qualification_month');
-                generationDate('#qualification_date',31);   
+                generationYear('#end_date_year',1900,(new Date()).getFullYear());
+                generationMonth('#end_date_month');
+                generationDate('#end_date_date',31);
+    
+                generationYear('#start_date_year',1900,(new Date()).getFullYear());
+                generationMonth('#start_date_month');
+                generationDate('#start_date_date',31);   
+                $('.japan_level').show();
             }
         });
     });
-
-    $('#kyu_id').change(function(){
-        if ($('#kyu_id').val() != "0"){
-            $('#total').prop('required',true);
-            $('#kyu_name').val($( "#kyu_id option:selected" ).text());
-        }else{
-            $('#total').prop('required',false);
-        }
-    });
 });
 
-function iaaSsValidateForm(){
-    password = $('#password').val();
-    repassword = $('#repassword').val();
-    if (password != repassword){
-        alert('Re-password does not correct');
-        return false;
-    }
-    return true;
-}

@@ -113,6 +113,54 @@ class JapanModelView():
         return json.dumps(xx)
 
 class Common():
+    def get_all_field_all_user():
+        '''
+        Lấy tất cả các cột của các bảng từ id cho tới text
+        '''
+        conn = Config.connect()
+
+        users = conn.query(
+            model.tbl_user,
+            model.tbl_detail_user_japan,
+            model.mst_group,
+            model.mst_japan
+        ).join(
+            model.mst_group
+        ).outerjoin(
+            model.tbl_detail_user_japan
+        ).outerjoin(
+            model.mst_japan
+        ).filter(
+            or_(model.tbl_detail_user_japan.detail_user_japan_id == None, model.tbl_detail_user_japan.user_id == model.tbl_user.id)
+        ).all()
+        return users
+
+    def get_all_field_one_user(user_id):
+        '''
+        Lấy tất cả các cột của các bảng từ id cho tới text
+        '''
+        conn = Config.connect()
+
+        users = conn.query(
+            model.tbl_user,
+            model.tbl_detail_user_japan,
+            model.mst_group,
+            model.mst_japan
+        ).join(
+            model.mst_group
+        ).outerjoin(
+            model.tbl_detail_user_japan
+        ).outerjoin(
+            model.mst_japan
+        ).filter(
+            or_(model.tbl_detail_user_japan.detail_user_japan_id == None, 
+                model.tbl_detail_user_japan.user_id == model.tbl_user.id)
+        ).filter(
+            model.tbl_user.id == user_id
+        ).first()
+        return users
+
+
 
     def get_user_by_id(user_id):
         """
@@ -276,6 +324,7 @@ class Common():
     @app.route("/logout")
     @login_required
     def logout():
+        session['user']= None
         logout_user()
         return redirect(url_for('login'))
 
