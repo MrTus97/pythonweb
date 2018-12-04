@@ -1,0 +1,129 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="/static/script/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/script/jquery.js"></script>
+<script type="text/javascript" src="/static/script/confirm.js"></script>
+<title>ユーザ管理</title>
+<title>ユーザ管理</title>
+</head>
+<body>
+	<!-- Begin vung header -->	
+		<div>			
+			<div>
+			<table>
+			<tr>
+			<td width = "80%"><img src="/static/images/logo-manager-user.gif" alt="Luvina" /><td>
+				<td align="left"><a href = "/login">ログアウト</a> &nbsp; <a href = "/">トップ</a><td>
+			</tr>
+			</table>
+			</div>
+		</div>
+
+<!-- End vung header -->	
+
+<!-- Begin vung input-->
+	<form action="" method="post" name="inputform">	
+	<table  class="tbl_input" border="0" width="75%"  cellpadding="0" cellspacing="0" >			
+		<tr>
+			<th align="left">
+				<div style="padding-left:100px;">
+					情報確認<br>
+					入力された情報をＯＫボタンクリックでＤＢへ保存してください
+				</div>
+				<div style="padding-left:100px;">&nbsp;</div>
+			</th>			
+		</tr>				
+		<tr>
+			<td align="left" >
+				<div style="padding-left:100px;">
+					<table border="1" width="70%" class="tbl_input" cellpadding="4" cellspacing="0" >					
+					<tr>
+						<td class="lbl_left">アカウント名:</td>
+						<td align="left"> {{ user.id}}</td>
+					</tr>
+					<tr>
+						<td class="lbl_left">グループ:</td>
+						<td align="left">{{ user.groupname}}</td>
+					</tr>
+					<tr>
+						<td class="lbl_left">氏名:</td>
+						<td align="left">{{user.name}}</td>
+					</tr>	
+					<tr>
+						<td class="lbl_left">カタカナ氏名:</td>
+						<td align="left">{{user.namekata}}</td>
+					</tr>
+					<tr>
+						<td class="lbl_left">生年月日:</td>
+						<td align="left"> {{ user.dateOfBirth_year}}/{{ user.dateOfBirth_month}}/{{ user.dateOfBirth_date}}</td>
+					</tr>				
+					<tr>
+						<td class="lbl_left">メールアドレス:</td>
+						<td align="left"> {{ user.email}}</td>
+					</tr>
+					<tr>
+						<td class="lbl_left">電話番号:</td>
+						<td align="left">{{ user.tel}}</td>
+					</tr>	
+					<tr>
+						<th colspan = "2"><a id="eligibility">日本語能力</a></th>
+					</tr>
+					<tr class="rowJapan">
+						<td class="lbl_left">資格:</td>
+						<td align="left" class="eligibility" id="code_name">
+						</td>
+					</tr>
+					<tr class="rowJapan">
+						<td class="lbl_left eligibility">資格交付日:</td>
+						<td align="left" id="start_date">
+							
+						</td>
+					</tr>
+					<tr class="rowJapan">
+						<td class="lbl_left eligibility">失効日:</td>
+						<td align="left" id="end_date">
+						</td>
+					</tr>	
+					<tr class="rowJapan">
+						<td class="lbl_left eligibility">点数:</td>
+						<td align="left" id="total">
+						</td>
+					</tr>												
+				</table>
+				</div>				
+			</td>		
+		</tr>
+	</table>
+	
+	<div style="padding-left:100px;">&nbsp;</div>
+		<!-- Begin vung button -->
+	<div style="padding-left:45px;">
+	<table border="0" cellpadding="4" cellspacing="0" width="300px">	
+		<tr>
+			<th width="200px" align="center">&nbsp;</th>
+				<td>
+					<input class="btn" type="submit" value="OK" />					
+				</td>	
+				<td>
+					<input class="btn" type="button" value="戻る" id="btnback"/>						
+				</td>
+		</tr>		
+	</table>
+	<!-- End vung button -->	
+</form>
+<!-- End vung input -->
+
+<!-- Begin vung footer -->
+<div class = "lbl_footer">
+	<br><br><br><br>
+			Copyright ©　2010　ルビナソフトウエア株式会社. All rights reserved.
+</div>
+<!-- End vung footer -->
+</body>
+
+</html>

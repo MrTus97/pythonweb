@@ -1,0 +1,60 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+<script src="/static/script/jquery-3.3.1.min.js"></script>
+<script src="/static/script/login.js"></script>
+<title>ユーザ管理</title>
+</head>
+<body align="center" >
+<form action="" method="post">
+<center>
+	<table class="tbl_input" cellpadding="4" cellspacing="0" width="400px">
+		<tr>
+			<th width="120px">&nbsp;</th><th></th>
+		</tr>
+		<tr>
+			<th colspan="2" align="left">アカウント名およびパスワードを入力してください
+					{% with messages = get_flashed_messages(category_filter=["loginFailure"]) %}
+					{% if messages %}
+					  <ul class=flashes>
+					  {% for message in messages %}
+						<li class="errMsg">{{ message }}</li>
+					  {% endfor %}
+					  </ul>
+					{% endif %}
+				  {% endwith %}
+
+			</th>
+		</tr>
+		
+		<tr>
+			<td class="errMsg" colspan="2">&nbsp;</td>
+		</tr>	
+		<tr align="left">
+			<td class="lbl_left">アカウント名:</td>
+			<td align="left">
+				<input class="txBox" type="text" name="loginId" id="username" value="" required size="20" onfocus="this.style.borderColor='#0066ff';"
+				onblur="this.style.borderColor='#aaaaaa';"  oninvalid="this.setCustomValidity('アカウント名を入力してください')" oninput="setCustomValidity('')"/>
+			</td>
+		</tr>
+		<tr>
+			<td class="lbl_left">パスワード:</td>
+			<td align="left">
+				<input class="txBox" type="password" name="password" id="password" value="" required size="22" onfocus="this.style.borderColor='#0066ff';"
+				onblur="this.style.borderColor='#aaaaaa';" oninvalid="this.setCustomValidity('パスワードを入力してください')" oninput="setCustomValidity('')" />
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td align="left">
+				<input class="btn btn_wider" type="submit" value="ログイン" id="btnLogin" />				
+			</td>
+		</tr>
+	</table>
+	</center>
+</form>
+</body>
+</html>
