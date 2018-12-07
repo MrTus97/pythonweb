@@ -6,6 +6,7 @@
 <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/static/script/jquery.js"></script>
+<script src="/static/script/constant_vi.js"></script>
 <script type="text/javascript" src="/static/script/detail-user.js"></script>
 <title>ユーザ管理</title>
 </head>
@@ -25,7 +26,8 @@
 <!-- End vung header -->	
 
 <!-- Begin vung input-->	
-	<form action="" method="post" name="inputform" onsubmit="return iaaSsValidateForm()">	
+	
+	<form action="/validate-user" method="post" name="inputform" >	
 	<table  class="tbl_input"   border="0" width="75%"  cellpadding="0" cellspacing="0" >			
 		<tr>
 			<th align="left">
@@ -37,7 +39,7 @@
 		<tr>
 			<td class="errMsg">
 				<div style="padding-left:120px">
-					&nbsp;
+					{{message}}
 				</div>
 			</td>
 		</tr>
@@ -48,17 +50,17 @@
 					<tr>
 						<td class="lbl_left"><font color = "red">*</font> アカウント名:</td>
 						<td align="left">
-							<input class="txBox" id="idUser" type="text" name="login_name" value="" maxlength="15" required
+							<input class="txBox" id="idUser" type="text" name="login_name" value="{{user.login_name}}" maxlength="15"
 							size="15" onfocus="this.style.borderColor='#0066ff';"
-							oninput="return xxx(this);"
-							oninvalid="return xxx(this);"
-							pattern="^[a-zA-Z][a-zA-Z0-9_]{3,15}$"/>
+							/>
+							<input type="hidden" name="id" value="{{user.id}}"/>
 						</td>
 					</tr>
 					<tr>
 						<td class="lbl_left"><font color = "red">*</font> グループ:</td>
 						<td align="left">
 							<select name="group_id" id="group_id">
+								<option value="0" selected="selected"> Chọn nhóm </option>
 								{% for group in groups %}	
 								<option value="{{ group.group_id }}"> {{ group.group_name}} </option>
 								{% endfor %}
@@ -70,7 +72,7 @@
 					<tr>
 						<td class="lbl_left"><font color = "red">*</font> 氏名:</td>
 						<td align="left">
-						<input class="txBox" type="text" name="name" value="" required
+						<input class="txBox" id="full_name" type="text" name="full_name" value="{{user.full_name}}" 
 							size="30" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />							
 						</td>
@@ -78,7 +80,7 @@
 					<tr>
 						<td class="lbl_left">カタカナ氏名:</td>
 						<td align="left">
-						<input class="txBox" type="text" name="full_name_kana" value=""
+						<input class="txBox" id="full_name_kana" type="text" name="full_name_kana" value="{{user.full_name_kana}}"
 							size="30" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />							
 						</td>
@@ -94,7 +96,7 @@
 					<tr>
 						<td class="lbl_left"><font color = "red">*</font> メールアドレス:</td>
 						<td align="left">
-							<input class="txBox" type="email" name="email" value="{{user.email}}" required
+							<input class="txBox" id="email" type="email" name="email" value="{{user.email}}" 
 							size="30" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />							
 						</td>
@@ -102,7 +104,7 @@
 					<tr>
 						<td class="lbl_left"><font color = "red">*</font>電話番号:</td>
 						<td align="left">
-						<input class="txBox" type="number" name="tel" value="{{user.tel}}" required
+						<input class="txBox" id="tel" type="number" name="tel" value="{{user.tel}}" 
 							size="30" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />						
 						</td>
@@ -110,7 +112,7 @@
 					<tr>
 						<td class="lbl_left"><font color = "red">*</font> パスワード:</td>
 						<td align="left">
-							<input class="txBox" id="password" type="password" name="password" value="{{user.password}}" required 
+							<input class="txBox" id="password" type="password" name="password" value="{{user.password}}"  
 							size="30" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />							
 						</td>
@@ -118,7 +120,7 @@
 					<tr>
 						<td class="lbl_left">パスワード（確認）:</td>
 						<td align="left">
-							<input class="txBox" id="repassword" type="password" name="repassword" value="{{user.password}}" required
+							<input class="txBox" id="repassword" type="password" name="repassword" value="{{user.password}}" 
 							size="30" onfocus="this.style.borderColor='#0066ff';"
 							onblur="this.style.borderColor='#aaaaaa';" />							
 						</td>
@@ -171,7 +173,7 @@
 		<tr>
 			<th width="200px" align="center">&nbsp;</th>
 				<td>
-					<input class="btn" type="submit" value="確認" />			
+					<input class="btn" type="submit" value="確認" id="btn-submit" />			
 				</td>	
 				<td>
 					<input class="btn" type="button" value="戻る" onclick="window.location = '/'" />						

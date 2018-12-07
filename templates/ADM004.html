@@ -44,19 +44,19 @@
 					<table border="1" width="70%" class="tbl_input" cellpadding="4" cellspacing="0" >					
 					<tr>
 						<td class="lbl_left">アカウント名:</td>
-						<td align="left"> {{ user.id}}</td>
+						<td align="left"> {{ user.login_name}}</td>
 					</tr>
 					<tr>
 						<td class="lbl_left">グループ:</td>
-						<td align="left">{{ user.groupname}}</td>
+						<td align="left">{{ user.group_name}}</td>
 					</tr>
 					<tr>
 						<td class="lbl_left">氏名:</td>
-						<td align="left">{{user.name}}</td>
+						<td align="left">{{user.full_name}}</td>
 					</tr>	
 					<tr>
 						<td class="lbl_left">カタカナ氏名:</td>
-						<td align="left">{{user.namekata}}</td>
+						<td align="left">{{user.full_name_kana}}</td>
 					</tr>
 					<tr>
 						<td class="lbl_left">生年月日:</td>
@@ -75,7 +75,7 @@
 					</tr>
 					<tr class="rowJapan">
 						<td class="lbl_left">資格:</td>
-						<td align="left" class="eligibility" id="code_name">
+						<td align="left" class="eligibility" id="name_level">
 						</td>
 					</tr>
 					<tr class="rowJapan">

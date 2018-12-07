@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
 <script src="/static/script/jquery-3.3.1.min.js"></script>
+<script src="/static/script/constant_vi.js"></script>
 <script src="/static/script/login.js"></script>
 <title>ユーザ管理</title>
 </head>
@@ -36,14 +37,14 @@
 		<tr align="left">
 			<td class="lbl_left">アカウント名:</td>
 			<td align="left">
-				<input class="txBox" type="text" name="loginId" id="username" value="" required size="20" onfocus="this.style.borderColor='#0066ff';"
-				onblur="this.style.borderColor='#aaaaaa';"  oninvalid="this.setCustomValidity('アカウント名を入力してください')" oninput="setCustomValidity('')"/>
+				<input class="txBox" type="text" name="loginId" id="username" value="" size="20" onfocus="this.style.borderColor='#0066ff';"
+				onblur="this.style.borderColor='#aaaaaa';" />
 			</td>
 		</tr>
 		<tr>
 			<td class="lbl_left">パスワード:</td>
 			<td align="left">
-				<input class="txBox" type="password" name="password" id="password" value="" required size="22" onfocus="this.style.borderColor='#0066ff';"
+				<input class="txBox" type="password" name="password" id="password" value="" size="22" onfocus="this.style.borderColor='#0066ff';"
 				onblur="this.style.borderColor='#aaaaaa';" oninvalid="this.setCustomValidity('パスワードを入力してください')" oninput="setCustomValidity('')" />
 			</td>
 		</tr>

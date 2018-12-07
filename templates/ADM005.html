@@ -57,7 +57,7 @@
 					</tr>
 					<tr>
 						<td class="lbl_left">生年月日:</td>
-						<td align="left">{{ user.bitrth_day }}</td>
+						<td align="left">{{ user.birthday }}</td>
 					</tr>				
 					<tr>
 						<td class="lbl_left">メールアドレス:</td>
@@ -68,7 +68,7 @@
 						<td align="left">{{ user.tel}}</td>
 					</tr>	
 					<tr>
-						<th colspan = "2"><a href = "#" id="eligibility">日本語能力</a></th>
+						<th colspan = "2"><a href = "javascript:void(0)" id="eligibility">日本語能力</a></th>
 					</tr>
 					<tr class="eligibility">
 						<td class="lbl_left ">資格:</td>
@@ -101,7 +101,7 @@
 				<input class="btn" type="submit" value="編集" />					
 			</td>
 			<td>
-				<input class="btn" id="btn-delete-user" type="button" value="削除" onclick="deleteUser('{{user.id}}');" />					
+				<input class="btn" id="btn-delete-user" type="button" value="削除" />					
 			</td>	
 			<td>
 				<input class="btn" type="button" value="戻る" onclick="location.href='/'" />						

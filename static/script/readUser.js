@@ -20,9 +20,12 @@ $(document).ready(function() {
         });
     });
 
+
     $('#btn-delete-user').click(function(){
         var user_id = window.location.pathname.substring(11,window.location.pathname.length);
-        window.location = "/delete-user/" + user_id;
+        if (window.confirm("Bạn có chắc muốn xóa nhân viên " + user_id + " này không ?")){
+            window.location = '/delete-user/'+userId;
+        }
     });
 });
 

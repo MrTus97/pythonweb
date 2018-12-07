@@ -48,18 +48,35 @@ class GroupModelView():
         return groups
 
 class UserModelView():
+
+    @app.route('/get_all_login_name')
+    def get_all_login_name():
+        '''
+        Lấy login_name và email của toàn bộ user để checkvalidate(màn hình ADM003)
+        '''
+        conn = Config.connect()
+        result = conn.query(
+            model.tbl_user.login_name,
+            model.tbl_user.email
+            
+        ).all()
+        xx = [{'login_name': str(r.login_name),'email': str(r.email)} for r in result]
+        return json.dumps(xx)
+
+
     @app.route('/create-user',methods =['GET','POST'])
     @login_required
-    def create_user():
+    def create_user(message=None):
         if request.method == 'POST':
             # Lấy tất cả thông tin ở form lưu vào session
-            session["user"] = request.form
+            session['user'] = request.form
             # Chuyển sang màn hình confirm
-            return redirect(url_for('confirm'))
+            return redirect(url_for('confirm',type_action="CREATE"))
 
         else:
-            user = session["user"] if "user" in session else None
-            return render_template('ADM003.html', groups=GroupModelView.get_all_group(),user=user)
+            user = session['user'] if "user" in session else None
+            message = request.args.get("message", None)
+            return render_template('ADM003.html', groups=GroupModelView.get_all_group(),user=user,message = message)
         
     @app.route('/read-user/<user_id>',methods = ['GET','POST'])
     @login_required
@@ -76,32 +93,77 @@ class UserModelView():
     @login_required
     def update_user(user_id):
         if request.method == 'POST':
-            pass
+            session['user'] = request.form
+
+            # Chuyển sang màn hình confirm
+            return redirect(url_for('confirm',type_action="UPDATE"))
+
         else:
             conn = Config.connect()
             user = Common.get_user_view_detail_by_id(user_id)
             conn.close()
-            return render_template('ADM003.html', user = user)
+            return render_template('ADM003.html',groups=GroupModelView.get_all_group(),user=user)
 
     @app.route('/delete-user/<user_id>')
     @login_required
     def delete_user(user_id):
+        '''
+        Cần xóa dữ liệu trong bảng chi tiết trình độ tiếng nhật (nếu có) và bảng user
+        '''
         try:
             conn = Config.connect()
-            user = conn.query(model.tbl_user).filter(model.tbl_user.id == user_id).first()
-            conn.delete(user)
-            conn.commit()
-            conn.close()
-            return redirect(url_for('success', message = "Xóa thành công"))
+            if user_id == '1':
+                return redirect(url_for('error', errors = "Không thể xóa user"))
+            # Kiểm tra tồn tại của user id
+            if isExistUser(user_id):
+                # Kiểm tra tiếng nhật (Xóa tiếng nhật trước rồi mới được xóa user)
+                japan_detail = conn.query(model.tbl_detail_user_japan).filter(model.tbl_detail_user_japan.user_id == user_id).first()
+                if japan_detail is not None:
+                    conn.delete(japan_detail)
+                    conn.commit()
+
+                # Xóa user
+                user = conn.query(model.tbl_user).filter(model.tbl_user.id == user_id).first()
+                conn.delete(user)
+                conn.commit()
+
+                conn.close()
+                return redirect(url_for('success', message = "Delete User thành công"))
+            else:
+                return redirect(url_for('error',errors= "Không tìm thấy user"))
         except Exception as identifier:
             return redirect(url_for('error',errors = identifier))
 
     @app.route('/get-user-session')
     @login_required
     def user_session():
-        user = session["user"]
+        user = session['user']
         return json.dumps(user)
-    
+
+    @app.route('/validate-user')
+    @login_required
+    def validate_user():
+        user = session['user'] if "user" in session else None
+        if user is not None:
+            # Xử lý valid rồi trả ra một mảng message, gán biến cờ
+            # Nếu có lỗi thì gọi lại /create-user
+            if flag:
+                return redirect(url_for('create_user')) 
+            # Nếu không có lỗi (ko có valid thì chuyển tới màn hình confirm)
+            else:
+                return redirect(url_for('create_user',message = "truyền list message vào tại đây"))
+
+        # Login name
+        # login_name = user['login_name']
+        # if login_name.length == 0 :
+        # return create_user(message= "test")
+            
+        else:
+            return redirect(url_for('create_user'))        
+
+
+
+
 class JapanModelView():
     @app.route('/japan')
     def get_all_japan():
@@ -115,7 +177,7 @@ class JapanModelView():
 class Common():
     def get_all_field_all_user():
         '''
-        Lấy tất cả các cột của các bảng từ id cho tới text
+        Lấy tất cả các cột của các bảng từ key cho đến value
         '''
         conn = Config.connect()
 
@@ -159,8 +221,6 @@ class Common():
             model.tbl_user.id == user_id
         ).first()
         return users
-
-
 
     def get_user_by_id(user_id):
         """
@@ -300,11 +360,24 @@ class Common():
             condition_name = request.form['name']
 
             conn = Config.connect()
-            return render_template(
-                'ADM002.html',
-                groups = groups,
-                users = Common.get_all_user_view_detail_follow_condition(condition_group,condition_name)
-            )
+            users = Common.get_all_user_view_detail_follow_condition(condition_group,condition_name)
+            if len(users) != 0:
+                return render_template(
+                    'ADM002.html',
+                    groups = groups,
+                    users = users,
+                    condition_name = condition_name,
+                    condition_group = condition_group
+                )
+            else:
+                return render_template(
+                    'ADM002.html',
+                    groups = groups,
+                    users = users,
+                    condition_name = condition_name,
+                    condition_group = condition_group,
+                    message = "Không tìm thấy user"
+                )
         else:
             return render_template(
                 'ADM002.html', 
@@ -334,13 +407,14 @@ class Common():
             # Lấy user và mật khẩu từ request
             user_name = request.form['loginId']
             password = request.form['password']
+
             # Check user
             conn = Config.connect()
             user = conn.query(model.tbl_user).filter(model.tbl_user.login_name == user_name).filter(model.tbl_user.password == password).first()
             if user is not None:
                 login_user(user)
                 return redirect(request.args.get("next") or '/')
-            flash("アカウント名およびパスワードを入力してくださいは不正です。", 'loginFailure')
+            flash("Tên đăng nhập hoặc Mật khẩu bị sai.", 'loginFailure')
             return redirect('/login')
         else:
             return render_template('ADM001.html')
@@ -363,39 +437,142 @@ class Common():
         message = request.args.get("errors", None)
         return render_template('System_Error.html', errors = message)
 
-    @app.route('/confirm',methods = ['GET','POST'])
-    def confirm():
+    @app.route('/confirm?type_action=<type_action>',methods = ['GET','POST'])
+    def confirm(type_action):
         # Lấy user từ session
-        user = session["user"]
+        user = session['user']
         if request.method == 'POST':
-            try:
-                userdb = model.tbl_user()
-                userdb.login_name = user['id']
-                userdb.group_id = user['group_id']
-                userdb.full_name = user['name']
-                userdb.full_name_kana = user['namekata']
-                userdb.email = user['email']
-                userdb.tel = user['tel']
-                userdb.password = user['password']
-                birthday = user['dateOfBirth_year'] + "/" + user['dateOfBirth_month'] + "/" +user['dateOfBirth_date']
-                userdb.birthday = birthday
-                datetime.datetime
-                conn = Config.connect()
-                conn.add(userdb)
-                
-                if user.code_level !="0":
-                    japan_detail = model.tbl_detail_user_japan()
-                    japan_detail.user_id = userdb.id
-                    japan_detail.code_level = usser['code_level']
-                
-                
-                conn.commit()
-                conn.close()
-                return redirect(url_for('success',message="Insert Thành công"))
-            except Exception as identifier:
-                return redirect(url_for('error',errors=identifier))
+            if type_action == "CREATE":
+                try:
+                    userdb = model.tbl_user()
+                    userdb.login_name = user['login_name']
+                    userdb.group_id = user['group_id']
+                    userdb.full_name = user['full_name']
+                    userdb.full_name_kana = user['full_name_kana']
+                    userdb.email = user['email']
+                    userdb.tel = user['tel']
+                    userdb.password = user['password']
+                    userdb.birthday = datetime.date(
+                        int(user['dateOfBirth_year']),
+                        int(user['dateOfBirth_month']),
+                        int(user['dateOfBirth_date'])
+                    )
+                    
+                    conn = Config.connect()
+                    conn.add(userdb)
+                    conn.commit()
+                    if user['code_level'] !="0":
+                        japan_detail = model.tbl_detail_user_japan()
+                        japan_detail.user_id = userdb.id
+                        japan_detail.code_level = user['code_level']
+                        
+                        japan_detail.start_date = datetime.date(
+                            int(user['start_date_year']),
+                            int(user['start_date_month']),
+                            int(user['start_date_date'])
+                        )
+                        
+                        japan_detail.end_date = datetime.date(
+                            int(user['end_date_year']),
+                            int(user['end_date_month']),
+                            int(user['end_date_date'])
+                        )
+
+                        japan_detail.total = user['total']
+                        conn.add(japan_detail)
+
+                    conn.commit()
+                    conn.close()
+                    # Làm xong thì xóa session lưu user đó đi
+                    session['user']= None
+
+                    return redirect(url_for('success',message="Đăng ký User thành công"))
+                except Exception as identifier:
+                    return redirect(url_for('error',errors=identifier))
+            else:
+                try:
+                    # Chỉnh sửa nhân viên
+                    conn = Config.connect()
+                    userdb = conn.query(model.tbl_user).filter(model.tbl_user.id == user['id']).first()
+                    userdb.login_name = user['login_name']
+                    userdb.group_id = user['group_id']
+                    userdb.password = user['password']
+                    userdb.full_name = user['full_name']
+                    userdb.full_name_kana = user['full_name_kana']
+                    userdb.email = user['email']
+                    userdb.tel = user['tel']
+                    userdb.birthday = datetime.date(
+                        int(user['dateOfBirth_year']),
+                        int(user['dateOfBirth_month']),
+                        int(user['dateOfBirth_date'])
+                    )
+
+
+                    #Chỉnh sửa trình độ tiếng nhật
+                    japan_detail = conn.query(model.tbl_detail_user_japan).filter(model.tbl_detail_user_japan.user_id == user['id']).first()
+                    if japan_detail is None:
+                        if user['code_level'] == '0':
+                            pass
+                        else:
+                            # Từ chưa có tiếng nhật thành có tiếng nhật
+                            # --> Thêm mới dữ liệu
+                            japan_detail = model.tbl_detail_user_japan()
+
+                            japan_detail.user_id = user['id']
+                            japan_detail.code_level = user['code_level']
+                            japan_detail.start_date = datetime.date(
+                                int(user['start_date_year']),
+                                int(user['start_date_month']),
+                                int(user['start_date_date'])
+                            )
+                            
+                            japan_detail.end_date = datetime.date(
+                                int(user['end_date_year']),
+                                int(user['end_date_month']),
+                                int(user['end_date_date'])
+                            )
+
+                            japan_detail.total = user['total']
+                            conn.add(japan_detail)
+                    else:
+                        #Trước đó đã có tiếng nhật
+                        if user['code_level'] == '0':
+                            # nhưng giờ không còn trình độ tiếng nhật nữa
+                            # --> Xóa trình độ tiếng nhật của user đó trong db
+                            conn.remove(japan_detail)
+                        else:
+                            # thay đổi trình độ tiếng nhật
+                            japan_detail = model.tbl_detail_user_japan()
+
+                            japan_detail.user_id = user['id']
+                            japan_detail.code_level = user['code_level']
+                            japan_detail.start_date = datetime.date(
+                                int(user['start_date_year']),
+                                int(user['start_date_month']),
+                                int(user['start_date_date'])
+                            )
+                            
+                            japan_detail.end_date = datetime.date(
+                                int(user['end_date_year']),
+                                int(user['end_date_month']),
+                                int(user['end_date_date'])
+                            )
+
+                            japan_detail.total = user['total']
+
+                    conn.commit()
+                    conn.close()
+                    # Làm xong thì xóa session lưu user đó đi
+                    session['user']= None
+
+                    return redirect(url_for('success',message="Update User thành công"))
+                except Exception as identifier:
+                    return redirect(url_for('error',errors= identifier))
+
+            
+            
         else:
-            return render_template('ADM004.html',user = user)
+            return render_template('ADM004.html',user=user)
 
 if __name__ == "__main__":
     # Create db

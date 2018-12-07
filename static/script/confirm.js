@@ -6,11 +6,11 @@ $(document).ready(function() {
         $.get("/get-user-session", function(data, status){
             if (status == 'success'){
                 var obj = JSON.parse(data);
-                $('#code_name').text(obj.kyu_name);
-                if (obj.kyu_name !=""){
-                    $('#total').text(obj.total);
-                    $('#start_date').text(obj.qualification_year + "/" + obj.qualification_month + "/" + obj.qualification_day);
-                    $('#end_date').text(obj.expire_year + "/" + obj.expire_month + "/" + obj.expire_day);
+                if (obj.code_level != 0){
+                    $('#name_level').text(obj.name_level);
+                    $('#total').text(obj.total);   
+                    $('#start_date').text(obj.start_date_year + "/" + obj.start_date_month + "/" + obj.start_date_date);
+                    $('#end_date').text(obj.end_date_year + "/" + obj.end_date_month + "/" + obj.end_date_date);
                 }
             }
         });
